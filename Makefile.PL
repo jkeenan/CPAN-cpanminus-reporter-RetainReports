@@ -10,5 +10,8 @@ WriteMakefile(
     ABSTRACT     => 'Retain reports on disk rather than transmitting them',
     PREREQ_PM    => {
                      'Test::Simple' => 0.44,
+                     'App::cpanminus::reporter' => 0,
+                     'CPAN::Testers::Common::Client',
+                     'Test::Reporter',
                     },
 );
