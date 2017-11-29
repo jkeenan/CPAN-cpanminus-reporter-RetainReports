@@ -85,14 +85,12 @@ sub make_report {
           unless $self->quiet;
         return;
     }
-print STDERR "WWW: ", $resource, "\n";
     return unless $self->parse_uri($resource);
 
     my $author = $self->author;
 
     my $cpanm_version = $self->{_cpanminus_version} || 'unknown cpanm version';
     my $meta = $self->get_meta_for( $dist );
-print STDERR "XXX: ", $self->distfile, "\n";
     my %CTCC_args = (
         author      => $self->author,
         distname    => $dist,   # string like: Mason-Tidy-2.57

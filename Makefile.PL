@@ -17,5 +17,6 @@ WriteMakefile(
                      'Path::Tiny' => 0.004, # testing
                      'URI' => 0,
                      'CPAN::DistnameInfo' => 0,
+                     'Capture::Tiny' => 0,
                     },
 );
