@@ -15,5 +15,7 @@ WriteMakefile(
                      'JSON' => 0,
                      'Test::Reporter' => 0, # do I still need this?
                      'Path::Tiny' => 0.004, # testing
+                     'URI' => 0,
+                     'CPAN::DistnameInfo' => 0,
                     },
 );

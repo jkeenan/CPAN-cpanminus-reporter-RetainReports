@@ -8,6 +8,8 @@ use Carp;
 use File::Path qw( make_path );
 use File::Spec;
 use JSON;
+use URI;
+use CPAN::DistnameInfo;
 #use Data::Dump qw( dd pp );
 
 sub set_report_dir {
@@ -23,6 +25,51 @@ sub get_report_dir {
     return $self->{report_dir};
 }
 
+sub distversion {
+  my ($self, $distversion) = @_;
+  $self->{_distversion} = $distversion if $distversion;
+  return $self->{_distversion};
+}
+
+sub parse_uri {
+  my ($self, $resource) = @_;
+
+  my $d = CPAN::DistnameInfo->new($resource);
+  $self->distversion($d->version);
+
+  my $uri = URI->new( $resource );
+  my $scheme = lc $uri->scheme;
+  if (    $scheme ne 'http'
+      and $scheme ne 'https'
+      and $scheme ne 'ftp'
+      and $scheme ne 'cpan'
+  ) {
+    print "invalid scheme '$scheme' for resource '$resource'. Skipping...\n"
+      unless $self->quiet;
+    return;
+  }
+
+  my $author = $self->get_author( $uri->path );
+  unless ($author) {
+    print "error fetching author for resource '$resource'. Skipping...\n"
+      unless $self->quiet;
+    return;
+  }
+
+  # the 'LOCAL' user is reserved and should never send reports.
+  if ($author eq 'LOCAL') {
+    print "'LOCAL' user is reserved. Skipping resource '$resource'\n"
+      unless $self->quiet;
+    return;
+  }
+
+  $self->author($author);
+
+  $self->distfile(substr("$uri", index("$uri", $author)));
+
+  return 1;
+}
+
 sub make_report {
     my ($self, $resource, $dist, $result, @test_output) = @_;
 
@@ -31,12 +78,14 @@ sub make_report {
           unless $self->quiet;
         return;
     }
+print STDERR "WWW: ", $resource, "\n";
     return unless $self->parse_uri($resource);
 
     my $author = $self->author;
 
     my $cpanm_version = $self->{_cpanminus_version} || 'unknown cpanm version';
     my $meta = $self->get_meta_for( $dist );
+print STDERR "XXX: ", $self->distfile, "\n";
     my %CTCC_args = (
         author      => $self->author,
         distname    => $dist,
@@ -49,10 +98,10 @@ sub make_report {
     croak "Could not locate $tdir" unless (-d $tdir);
     my $report = File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log', 'json'));
     open my $OUT, '>', $report or croak "Unable to open $report for writing";
-    say $OUT encode_json(\%CTCC_args);
+    say $OUT encode_json( { %CTCC_args, 'distversion' => $self->distversion } );
     close $OUT or croak "Unable to close $report after writing";
 
-  return;
+    return;
 }
 
 =head1 NAME

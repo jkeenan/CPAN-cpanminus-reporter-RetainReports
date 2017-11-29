@@ -42,6 +42,7 @@ BEGIN { use_ok( 'App::cpanminus::reporter::RetainReports' ); }
       is($decoded->{author}, 'BINGOS', "Got expected author");
       is($decoded->{distname}, 'Module-CoreList-3.07', "Got expected distname");
       is($decoded->{grade}, 'PASS', "Got expected grade");
+      is($decoded->{distversion}, '3.07', "Got expected distversion");
       like($decoded->{test_output}, qr/Building and testing Module-CoreList-3.07/s,
           "Got expected start of test output");
     };
