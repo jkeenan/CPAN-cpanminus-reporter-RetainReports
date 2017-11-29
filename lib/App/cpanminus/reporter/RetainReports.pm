@@ -1,11 +1,14 @@
 package App::cpanminus::reporter::RetainReports;
 use strict;
+use warnings;
+use 5.10.1;
 use parent ('App::cpanminus::reporter');
 our $VERSION = '0.01';
 use CPAN::Testers::Common::Client;
 use Test::Reporter;
 use Carp;
 use Data::Dump qw( dd pp );
+use File::Spec;
 
 sub run {
   my $self = shift;
@@ -127,7 +130,6 @@ sub run {
             print "Skipping $dist as its build Perl version ($self->{_perl_version}) differs from the currently running perl ($])...\n" if $self->verbose;
         }
         else {
-print STDERR "XXX: Ready to make_report\n";
             my $report = $self->make_report($resource, $dist, $result, @test_output);
         }
         return;
@@ -145,63 +147,41 @@ print STDERR "XXX: Ready to make_report\n";
 }
 
 sub make_report {
-  my ($self, $resource, $dist, $result, @test_output) = @_;
-  #print STDERR "AAA: my own make_report()\n";
-#print STDERR "AAA: resource: $resource\n";
-#print STDERR "BBB: dist:     $dist\n";
-#print STDERR "CCC: result:   $result\n";
-#pp(\@test_output);
-#print STDERR "DDD:\n";
+    my ($self, $resource, $dist, $result, @test_output) = @_;
 
-  if ( index($dist, 'Local-') == 0 ) {
-      print "'Local::' namespace is reserved. Skipping resource '$resource'\n"
-        unless $self->quiet;
-      return;
-  }
-  return unless $self->parse_uri($resource);
+    if ( index($dist, 'Local-') == 0 ) {
+        print "'Local::' namespace is reserved. Skipping resource '$resource'\n"
+          unless $self->quiet;
+        return;
+    }
+    return unless $self->parse_uri($resource);
 
-  my $author = $self->author;
+    my $author = $self->author;
 
-  my $cpanm_version = $self->{_cpanminus_version} || 'unknown cpanm version';
-  my $meta = $self->get_meta_for( $dist );
-  my $client = CPAN::Testers::Common::Client->new(
-    author      => $self->author,
-    distname    => $dist,
-    grade       => $result,
-    via         => "App::cpanminus::reporter $App::cpanminus::reporter::VERSION ($cpanm_version)",
-    test_output => join( '', @test_output ),
-    prereqs     => ($meta && ref $meta) ? $meta->{prereqs} : undef,
-  );
+    my $cpanm_version = $self->{_cpanminus_version} || 'unknown cpanm version';
+    my $meta = $self->get_meta_for( $dist );
+    my %CTCC_args = (
+        author      => $self->author,
+        distname    => $dist,
+        grade       => $result,
+        via         => "App::cpanminus::reporter $App::cpanminus::reporter::VERSION ($cpanm_version)",
+        test_output => join( '', @test_output ),
+        prereqs     => ($meta && ref $meta) ? $meta->{prereqs} : undef,
+    );
+    my $tdir = File::Spec->tmpdir();
+    my $report = File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log'));
+    open my $OUT, '>', $report or croak "Unable to open $report for writing";
+    printf $OUT "%-12s%s\n" => ('distname', $CTCC_args{distname});
+    printf $OUT "%-12s%s\n" => ('author', $CTCC_args{author});
+    printf $OUT "%-12s%s\n" => ('grade', $CTCC_args{grade});
+    printf $OUT "%-12s%s\n" => ('via', $CTCC_args{via});
+    printf $OUT "%-12s%s\n" => ('prereqs', $CTCC_args{via} // '');
+    printf $OUT "START test output\n";
+    printf $OUT $CTCC_args{test_output};
+    printf $OUT "END test output\n";
+    close $OUT or croak "Unable to close $report after writing";
 
-  if (!$self->skip_history && $client->is_duplicate) {
-      #print STDERR "QQQ: already sent\n";
-    print "($resource, $author, $dist, $result) was already sent. Skipping...\n"
-      if $self->verbose;
-    return;
-  }
-  else {
-      #print STDERR "RRR: NOT already sent\n";
-    print "preparing: ($resource, $author, $dist, $result)\n" unless $self->quiet;
-  }
-
-  my %test_reporter_args = (
-    transport      => $self->config->transport_name,
-    transport_args => $self->config->transport_args,
-    grade          => $client->grade,
-    distribution   => $dist,
-    distfile       => $self->distfile,
-    from           => $self->config->email_from,
-    comments       => $client->email,
-    via            => $client->via,
-  );
-  $self->{test_reporter_args} = \%test_reporter_args;
   return;
-}
-
-sub get_test_reporter_args {
-    my $self = shift;
-    return $self->{test_reporter_args} if exists $self->{test_reporter_args};
-    return;
 }
 
 =head1 NAME
