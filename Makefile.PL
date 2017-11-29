@@ -11,7 +11,9 @@ WriteMakefile(
     PREREQ_PM    => {
                      'Test::Simple' => 0.44,
                      'App::cpanminus::reporter' => 0,
-                     'CPAN::Testers::Common::Client',
-                     'Test::Reporter',
+                     'CPAN::Testers::Common::Client' => 0,
+                     'JSON' => 0,
+                     'Test::Reporter' => 0, # do I still need this?
+                     'Path::Tiny' => 0.004, # testing
                     },
 );

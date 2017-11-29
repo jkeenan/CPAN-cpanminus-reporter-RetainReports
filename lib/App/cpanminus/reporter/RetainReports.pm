@@ -7,6 +7,7 @@ our $VERSION = '0.01';
 use Carp;
 use File::Path qw( make_path );
 use File::Spec;
+use JSON;
 #use Data::Dump qw( dd pp );
 
 sub set_report_dir {
@@ -46,16 +47,9 @@ sub make_report {
     );
     my $tdir = $self->get_report_dir();
     croak "Could not locate $tdir" unless (-d $tdir);
-    my $report = File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log'));
+    my $report = File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log', 'json'));
     open my $OUT, '>', $report or croak "Unable to open $report for writing";
-    printf $OUT "%-12s%s\n" => ('distname', $CTCC_args{distname});
-    printf $OUT "%-12s%s\n" => ('author', $CTCC_args{author});
-    printf $OUT "%-12s%s\n" => ('grade', $CTCC_args{grade});
-    printf $OUT "%-12s%s\n" => ('via', $CTCC_args{via});
-    printf $OUT "%-12s%s\n" => ('prereqs', $CTCC_args{via} // '');
-    printf $OUT "START test output\n";
-    printf $OUT $CTCC_args{test_output} if length($CTCC_args{test_output});
-    printf $OUT "END test output\n";
+    say $OUT encode_json(\%CTCC_args);
     close $OUT or croak "Unable to close $report after writing";
 
   return;
