@@ -31,11 +31,18 @@ sub distversion {
   return $self->{_distversion};
 }
 
+sub distname {
+  my ($self, $distname) = @_;
+  $self->{_distname} = $distname if $distname;
+  return $self->{_distname};
+}
+
 sub parse_uri {
   my ($self, $resource) = @_;
 
   my $d = CPAN::DistnameInfo->new($resource);
   $self->distversion($d->version);
+  $self->distname($d->dist);
 
   my $uri = URI->new( $resource );
   my $scheme = lc $uri->scheme;
@@ -88,7 +95,7 @@ print STDERR "WWW: ", $resource, "\n";
 print STDERR "XXX: ", $self->distfile, "\n";
     my %CTCC_args = (
         author      => $self->author,
-        distname    => $dist,
+        distname    => $dist,   # string like: Mason-Tidy-2.57
         grade       => $result,
         via         => "App::cpanminus::reporter $App::cpanminus::reporter::VERSION ($cpanm_version)",
         test_output => join( '', @test_output ),
@@ -98,7 +105,11 @@ print STDERR "XXX: ", $self->distfile, "\n";
     croak "Could not locate $tdir" unless (-d $tdir);
     my $report = File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log', 'json'));
     open my $OUT, '>', $report or croak "Unable to open $report for writing";
-    say $OUT encode_json( { %CTCC_args, 'distversion' => $self->distversion } );
+    say $OUT encode_json( {
+        %CTCC_args,
+        'distversion' => $self->distversion,
+        'dist'        => $self->distname,   # string like: Mason-Tidy
+    } );
     close $OUT or croak "Unable to close $report after writing";
 
     return;
