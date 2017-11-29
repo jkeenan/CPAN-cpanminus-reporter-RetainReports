@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Test::More;
 use Data::Dump qw( dd pp );
+use File::Temp qw( tempdir );
 
 BEGIN { use_ok( 'App::cpanminus::reporter::RetainReports' ); }
 
@@ -29,7 +30,11 @@ BEGIN { use_ok( 'App::cpanminus::reporter::RetainReports' ); }
     {
       no warnings 'redefine';
       local *App::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
+      my $tdir = tempdir( CLEANUP => 0 );
+      $reporter->set_report_dir($tdir);
       $reporter->run;
+      my $lfile = File::Spec->catfile($tdir, 'BINGOS.Module-CoreList-3.07.log');
+      ok(-f $lfile, "Log file $lfile created");
     };
 }
 

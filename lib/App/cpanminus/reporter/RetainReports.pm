@@ -5,8 +5,22 @@ use 5.10.1;
 use parent ('App::cpanminus::reporter');
 our $VERSION = '0.01';
 use Carp;
+use File::Path qw( make_path );
 use File::Spec;
 #use Data::Dump qw( dd pp );
+
+sub set_report_dir {
+    my ($self, $dir) = @_;
+    unless (-d $dir) {
+        make_path($dir, { mode => 0711 }) or croak "Unable to create $dir";
+    }
+    $self->{report_dir} = $dir;
+}
+
+sub get_report_dir {
+    my $self = shift;
+    return $self->{report_dir};
+}
 
 sub make_report {
     my ($self, $resource, $dist, $result, @test_output) = @_;
@@ -30,7 +44,8 @@ sub make_report {
         test_output => join( '', @test_output ),
         prereqs     => ($meta && ref $meta) ? $meta->{prereqs} : undef,
     );
-    my $tdir = File::Spec->tmpdir();
+    my $tdir = $self->get_report_dir();
+    croak "Could not locate $tdir" unless (-d $tdir);
     my $report = File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log'));
     open my $OUT, '>', $report or croak "Unable to open $report for writing";
     printf $OUT "%-12s%s\n" => ('distname', $CTCC_args{distname});
@@ -39,7 +54,7 @@ sub make_report {
     printf $OUT "%-12s%s\n" => ('via', $CTCC_args{via});
     printf $OUT "%-12s%s\n" => ('prereqs', $CTCC_args{via} // '');
     printf $OUT "START test output\n";
-    printf $OUT $CTCC_args{test_output};
+    printf $OUT $CTCC_args{test_output} if length($CTCC_args{test_output});
     printf $OUT "END test output\n";
     close $OUT or croak "Unable to close $report after writing";
 
