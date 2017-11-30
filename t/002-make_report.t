@@ -717,6 +717,81 @@ test_multiple_log_files( {
     ],
 } );
 
+test_one_log_file( {
+    build_logfile   => 'build.na.log',
+    json_title      => 'ETHER.Dist-Zilla-Plugin-MungeFile-WithDataSection-0.007',
+    expected        =>  {
+          author        => 'ETHER',
+          distname      => 'Dist-Zilla-Plugin-MungeFile-WithDataSection-0.007',
+          dist          => 'Dist-Zilla-Plugin-MungeFile-WithDataSection',
+          distversion   => '0.007',
+          # App::cpanminus::reporter::run sets grade to NA when failure is in
+          # configure stage
+          grade         => 'NA',
+          test_output   => qr/FAIL Configure failed for Dist-Zilla-Plugin-MungeFile-WithDataSection-0\.007/s,
+    },
+} );
+
+test_multiple_log_files( {
+    build_logfile   => 'build.missing.log',
+    logs            => [
+        {
+            json_title      => 'FDALY.Test-Tester-0.109',
+            expected        =>  {
+                  author        => 'FDALY',
+                  distname      => 'Test-Tester-0.109',
+                  dist          => 'Test-Tester',
+                  distversion   => '0.109',
+                  grade         => 'PASS',
+                  test_output   => qr/Building and testing Test-Tester-0\.109/s,
+            },
+        },
+        {
+            json_title      => 'AUDREYT.Test-use-ok-0.11',
+            expected        =>  {
+                  author        => 'AUDREYT',
+                  distname      => 'Test-use-ok-0.11',
+                  dist          => 'Test-use-ok',
+                  distversion   => '0.11',
+                  grade         => 'PASS',
+                  # Note difference in version numbers
+                  test_output   => qr/Building and testing Test-use-ok-0\.10/s,
+            },
+        },
+    ],
+} );
+
+test_multiple_log_files( {
+    build_logfile   => 'build.local.log',
+    logs            => [
+        # Fetching http://www.cpan.org/authors/id/I/IS/ISHIGAKI/Acme-CPANAuthors-0.26.tar.gz
+        {
+            json_title      => 'ISHIGAKI.Acme-CPANAuthors-0.26',
+            expected        =>  {
+                  author        => 'ISHIGAKI',
+                  distname      => 'Acme-CPANAuthors-0.26',
+                  dist          => 'Acme-CPANAuthors',
+                  distversion   => '0.26',
+                  grade         => 'PASS',
+                  test_output   => qr/Building and testing Acme-CPANAuthors-0\.26/s,
+            },
+        },
+        #Fetching http://www.cpan.org/authors/id/I/IS/ISHIGAKI/ExtUtils-MakeMaker-CPANfile-0.07.tar.gz
+        {
+            json_title      => 'ISHIGAKI.ExtUtils-MakeMaker-CPANfile-0.07',
+            expected        =>  {
+                  author        => 'ISHIGAKI',
+                  distname      => 'ExtUtils-MakeMaker-CPANfile-0.07',
+                  dist          => 'ExtUtils-MakeMaker-CPANfile',
+                  distversion   => '0.07',
+                  grade         => 'PASS',
+                  # Note difference in version numbers
+                  test_output   => qr/Building and testing ExtUtils-MakeMaker-CPANfile-0\.07/s,
+            },
+        },
+    ],
+} );
+
 
 done_testing;
 

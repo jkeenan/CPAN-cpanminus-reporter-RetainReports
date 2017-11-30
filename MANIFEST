@@ -1,3 +1,4 @@
+App-cpanminus-reporter-RetainReports-0.01.tar.gz
 Changes
 lib/App/cpanminus/reporter/RetainReports.pm
 LICENSE
@@ -10,8 +11,11 @@ t/data/build.cloudweights.log
 t/data/build.configure_failed.log
 t/data/build.dist_subdir.log
 t/data/build.fresh.log
+t/data/build.local.log
+t/data/build.missing.log
 t/data/build.module_dir.log
 t/data/build.moose.log
+t/data/build.na.log
 t/data/build.single.log
 t/data/build.single_extended.log
 t/data/build.verbose_cpanm.log
