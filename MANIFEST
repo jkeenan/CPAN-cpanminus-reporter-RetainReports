@@ -7,6 +7,7 @@ MANIFEST.SKIP
 README
 t/001-load.t
 t/002-make_report.t
+t/003-analyze-cpan-river.t
 t/data/build.cloudweights.log
 t/data/build.configure_failed.log
 t/data/build.dist_subdir.log
@@ -20,5 +21,6 @@ t/data/build.single.log
 t/data/build.single_extended.log
 t/data/build.verbose_cpanm.log
 t/data/build.version_strings.log
+t/data/cpanriver.01.build.log.gz
 t/lib/Testing.pm
 Todo
