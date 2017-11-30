@@ -9,13 +9,13 @@ use Testing ( qw|
     test_no_test_output
     test_multiple_log_files
 | );
-BEGIN { use_ok( 'App::cpanminus::reporter::RetainReports' ); }
+BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
 
 {
-    my $reporter = App::cpanminus::reporter::RetainReports->new(verbose => 1);
+    my $reporter = CPAN::cpanminus::reporter::RetainReports->new(verbose => 1);
     ok(defined $reporter, "Inherited constructor returned defined object");
-    isa_ok($reporter, 'App::cpanminus::reporter::RetainReports');
-    can_ok('App::cpanminus::reporter::RetainReports', qw|
+    isa_ok($reporter, 'CPAN::cpanminus::reporter::RetainReports');
+    can_ok('CPAN::cpanminus::reporter::RetainReports', qw|
         run
         make_report
     | );

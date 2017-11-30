@@ -3,18 +3,18 @@ use strict;
 use warnings;
 use Test::More;
 
-BEGIN { use_ok( 'App::cpanminus::reporter::RetainReports' ); }
+BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
 
 {
-    my $reporter = App::cpanminus::reporter::RetainReports->new();
+    my $reporter = CPAN::cpanminus::reporter::RetainReports->new();
     ok(defined $reporter, "Inherited constructor returned defined object");
-    isa_ok($reporter, 'App::cpanminus::reporter::RetainReports');
+    isa_ok($reporter, 'CPAN::cpanminus::reporter::RetainReports');
     
     note("Demonstrate that all methods inherited from App::cpanminus::reporter can be called");
     
     isa_ok($reporter, 'App::cpanminus::reporter');
     
-    can_ok('App::cpanminus::reporter::RetainReports', qw|
+    can_ok('CPAN::cpanminus::reporter::RetainReports', qw|
           new config verbose quiet only exclude build_dir build_logfile
           get_author get_meta_for
     | );
@@ -61,9 +61,9 @@ BEGIN { use_ok( 'App::cpanminus::reporter::RetainReports' ); }
 }
 
 {
-    my $reporter = App::cpanminus::reporter::RetainReports->new(verbose => 1);
+    my $reporter = CPAN::cpanminus::reporter::RetainReports->new(verbose => 1);
     ok(defined $reporter, "Inherited constructor returned defined object");
-    isa_ok($reporter, 'App::cpanminus::reporter::RetainReports');
+    isa_ok($reporter, 'CPAN::cpanminus::reporter::RetainReports');
 
     note("Demonstrate that arguments passed to constructor work as expected");
     ok($reporter->verbose, "'verbose' correctly set in object()");

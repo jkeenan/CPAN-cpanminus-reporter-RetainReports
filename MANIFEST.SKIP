@@ -41,4 +41,4 @@ dump
 \.appveyor.yml
 ^README.md
 tmp/
-App-cpanminus-reporter-RetainReports-*.tar.gz
+CPAN-cpanminus-reporter-RetainReports-*.tar.gz

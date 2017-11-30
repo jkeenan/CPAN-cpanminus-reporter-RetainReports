@@ -1,8 +1,8 @@
-# .gitignore for App-cpanminus-reporter-RetainReports
+# .gitignore for CPAN-cpanminus-reporter-RetainReports
 /MANIFEST.bak
 /Makefile
 /Makefile.old
-/App-cpanminus-reporter-RetainReports-*.tar.gz
+/CPAN-cpanminus-reporter-RetainReports-*.tar.gz
 /MYMETA.yml
 /MYMETA.json
 /blib

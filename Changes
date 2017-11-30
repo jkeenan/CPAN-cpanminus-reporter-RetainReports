@@ -1,4 +1,4 @@
-Revision history for Perl module App::cpanminus::reporter::RetainReports
+Revision history for Perl module CPAN::cpanminus::reporter::RetainReports
 
 0.01 Tue Nov 28 08:05:47 2017
     - original version; created by ExtUtils::ModuleMaker 0.56

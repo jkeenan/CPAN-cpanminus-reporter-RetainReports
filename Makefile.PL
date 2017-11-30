@@ -4,8 +4,8 @@ require 5.008;
 my $mm_ver = ExtUtils::MakeMaker->VERSION;
 
 WriteMakefile(
-    NAME         => 'App::cpanminus::reporter::RetainReports',
-    VERSION_FROM => 'lib/App/cpanminus/reporter/RetainReports.pm', # finds \$VERSION
+    NAME         => 'CPAN::cpanminus::reporter::RetainReports',
+    VERSION_FROM => 'lib/CPAN/cpanminus/reporter/RetainReports.pm', # finds \$VERSION
     AUTHOR       => 'James E Keenan (jkeenan@cpan.org)',
     ABSTRACT     => 'Retain reports on disk rather than transmitting them',
     PREREQ_PM    => {

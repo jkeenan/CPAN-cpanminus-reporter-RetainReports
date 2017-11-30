@@ -1,4 +1,4 @@
-package App::cpanminus::reporter::RetainReports;
+package CPAN::cpanminus::reporter::RetainReports;
 use strict;
 use warnings;
 use 5.10.1;
@@ -115,11 +115,11 @@ sub make_report {
 
 =head1 NAME
 
-App::cpanminus::reporter::RetainReports - Retain reports on disk rather than transmitting them
+CPAN::cpanminus::reporter::RetainReports - Retain reports on disk rather than transmitting them
 
 =head1 SYNOPSIS
 
-    use App::cpanminus::reporter::RetainReports;
+    use CPAN::cpanminus::reporter::RetainReports;
 
 =head1 DESCRIPTION
 

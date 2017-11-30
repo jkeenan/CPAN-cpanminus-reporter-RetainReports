@@ -42,7 +42,7 @@ sub test_one_log_file {
 
     {
         no warnings 'redefine';
-        local *App::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
+        local *CPAN::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
         my $tdir = tempdir( CLEANUP => 1 );
         $reporter->set_report_dir($tdir);
         $reporter->run;
@@ -58,7 +58,7 @@ sub test_no_test_output {
 
     {
         no warnings 'redefine';
-        local *App::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
+        local *CPAN::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
         my $tdir = tempdir( CLEANUP => 1 );
         $reporter->set_report_dir($tdir);
         my $output = capture_stdout { $reporter->run; };
@@ -87,7 +87,7 @@ sub _check_args {
 sub _create_reporter {
     my $args = shift;
     my $dir = -d 't' ? 't/data' : 'data';
-    my $reporter = App::cpanminus::reporter::RetainReports->new(
+    my $reporter = CPAN::cpanminus::reporter::RetainReports->new(
         force => 1, # ignore mtime check on build.log
         build_logfile => File::Spec->catfile($dir, $args->{build_logfile}),
         'ignore-versions' => 1,
@@ -172,7 +172,7 @@ sub test_multiple_log_files {
 
     {
         no warnings 'redefine';
-        local *App::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
+        local *CPAN::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
         my $tdir = tempdir( CLEANUP => 1 );
         $reporter->set_report_dir($tdir);
         $reporter->run;
