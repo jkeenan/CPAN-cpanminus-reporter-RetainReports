@@ -6,5 +6,14 @@ MANIFEST			This list of files
 README
 t/001-load.t
 t/002-make_report.t
+t/data/build.cloudweights.log
+t/data/build.configure_failed.log
+t/data/build.dist_subdir.log
+t/data/build.fresh.log
+t/data/build.module_dir.log
+t/data/build.moose.log
 t/data/build.single.log
+t/data/build.single_extended.log
+t/data/build.verbose_cpanm.log
+t/data/build.version_strings.log
 Todo
