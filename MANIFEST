@@ -20,4 +20,5 @@ t/data/build.single.log
 t/data/build.single_extended.log
 t/data/build.verbose_cpanm.log
 t/data/build.version_strings.log
+t/lib/Testing.pm
 Todo
