@@ -15,6 +15,7 @@ our @EXPORT_OK = ( qw|
     test_one_log_file
     test_no_test_output
     test_multiple_log_files
+    test_absence_of_stdout
 | );
 
 
@@ -47,7 +48,7 @@ sub test_one_log_file {
         $reporter->set_report_dir($tdir);
         $reporter->run;
         _analyze_json_file($tdir, $args);
-    };
+    }
     return 1;
 }
 
@@ -64,7 +65,7 @@ sub test_no_test_output {
         my $output = capture_stdout { $reporter->run; };
         Test::More::like($output, qr/No test output found for '$args->{expected}->{distname}'/s,
             "Got expected output indicating no test output for $args->{expected}->{distname}");
-    };
+    }
     return 1;
 }
 
@@ -180,6 +181,41 @@ sub test_multiple_log_files {
             _analyze_json_file($tdir, $hr);
         }
     };
+}
+
+=pod
+
+    test_absence_of_stdout( {
+        build_logfile   => 'mixed_scheme.build.log',
+        json_title      => 'JKEENAN.Data-Presenter-1.03',
+        expected        =>  {
+            author        => 'JKEENAN',
+            distname      => 'Data-Presenter-1.03',
+            dist          => 'Data-Presenter',
+            distversion   => '1.03',
+            grade         => 'PASS',
+            test_output   => qr/Building and testing Data-Presenter-1\.03/s,
+            superseded    => qr/invalid scheme 'file' for resource.*Skipping/s,
+        },
+    } );
+
+=cut
+
+sub test_absence_of_stdout {
+    my $args = shift;
+    _check_args($args);
+    my $reporter = Testing::_create_reporter($args);
+    {
+        no warnings 'redefine';
+        local *CPAN::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
+        my $tdir = File::Temp::tempdir( CLEANUP => 1 );
+        $reporter->set_report_dir($tdir);
+        my $output = capture_stdout { $reporter->run; } || '';
+        Test::More::unlike($output, qr/$args->{expected}->{superseded}/,
+            "Got no message on STDOUT indicating problem");
+        _analyze_json_file($tdir, $args);
+    }
+    return 1;
 }
 
 1;
