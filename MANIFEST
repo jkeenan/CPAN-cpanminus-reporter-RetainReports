@@ -21,6 +21,7 @@ t/data/build.single.log
 t/data/build.single_extended.log
 t/data/build.verbose_cpanm.log
 t/data/build.version_strings.log
-t/data/cpanriver.01.build.log.gz
+t/data/cpanriver.01.build.log
+t/data/cpanriver.02.build.log
 t/lib/Testing.pm
 Todo
