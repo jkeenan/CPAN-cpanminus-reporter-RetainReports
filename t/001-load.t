@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Test::More;
+use File::Temp ( qw| tempdir | );
 
 BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
 
@@ -67,6 +68,24 @@ BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
 
     note("Demonstrate that arguments passed to constructor work as expected");
     ok($reporter->verbose, "'verbose' correctly set in object()");
+
+    note("Demonstrate that overridden methods or other methods not found in App-cpanminus-reporter are working");
+    my $tdir = tempdir( CLEANUP => 1 );
+    my $rdir = $reporter->set_report_dir($tdir);
+    is($rdir, $tdir, "set_report_dir() worked as expected");
+
+    my $gdir = $reporter->get_report_dir();
+    is($gdir, $rdir, "get_report_dir worked as expected");
+
+    my ($uri, $rf);
+    $uri = q|http://www.cpan.org/authors/id/J/JK/JKEENAN/Perl-Download-FTP-0.02.tar.gz|;
+    $rf = $reporter->parse_uri($uri);
+    ok($rf, "parse_uri() returned true value");
+    is($reporter->distname(),'Perl-Download-FTP', "distname() returned expected value");
+    is($reporter->distversion(), '0.02', "distversion() returned expected value");
+    is($reporter->distfile(), 'JKEENAN/Perl-Download-FTP-0.02.tar.gz', "distfile() returned expected value");
+    is($reporter->author(), 'JKEENAN', "author() returned expected value");
+
 }
 
 done_testing;

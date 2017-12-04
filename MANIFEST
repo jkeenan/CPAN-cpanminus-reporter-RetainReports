@@ -1,4 +1,6 @@
 Changes
+examples/BINGOS.Archive-Extract-0.80.log.json
+examples/BINGOS.Archive-Extract-0.80.log.txt
 lib/CPAN/cpanminus/reporter/RetainReports.pm
 LICENSE
 Makefile.PL
