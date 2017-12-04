@@ -38,7 +38,7 @@ nytprof.out
 dump
 \.gitignore
 \.travis.yml
-\.appveyor.yml
+\.appveyor.yml*
 ^README.md
 tmp/
 CPAN-cpanminus-reporter-RetainReports-*.tar.gz
