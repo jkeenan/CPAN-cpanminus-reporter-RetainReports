@@ -9,7 +9,7 @@ WriteMakefile(
     AUTHOR       => 'James E Keenan (jkeenan@cpan.org)',
     ABSTRACT     => 'Retain reports on disk rather than transmitting them',
     PREREQ_PM    => {
-                     'App::cpanminus::reporter'         => 0,
+                     'App::cpanminus::reporter'         => 0.17,
                      'Carp'                             => 0,
                      'CPAN::Testers::Common::Client'    => 0,
                      'CPAN::DistnameInfo'               => 0,
