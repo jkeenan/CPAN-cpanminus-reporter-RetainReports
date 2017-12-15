@@ -374,7 +374,7 @@ sub make_report {
     my $cpanm_version = $self->{_cpanminus_version} || 'unknown cpanm version';
     my $meta = $self->get_meta_for( $dist );
     my %CTCC_args = (
-        author      => $self->author,
+        author      => $self->author || '',
         distname    => $dist,   # string like: Mason-Tidy-2.57
         grade       => $result,
         via         => "App::cpanminus::reporter $App::cpanminus::reporter::VERSION ($cpanm_version)",
@@ -383,7 +383,9 @@ sub make_report {
     );
     my $tdir = $self->get_report_dir();
     croak "Could not locate $tdir" unless (-d $tdir);
-    my $report = File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log', 'json'));
+    my $report = (length $author)
+        ? File::Spec->catfile($tdir, join('.' => $self->author, $dist, 'log', 'json'))
+        : File::Spec->catfile($tdir, join('.' =>                $dist, 'log', 'json'));
     open my $OUT, '>', $report or croak "Unable to open $report for writing";
     say $OUT encode_json( {
         %CTCC_args,
