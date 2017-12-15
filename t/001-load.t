@@ -85,7 +85,33 @@ BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
     is($reporter->distversion(), '0.02', "distversion() returned expected value");
     is($reporter->distfile(), 'JKEENAN/Perl-Download-FTP-0.02.tar.gz', "distfile() returned expected value");
     is($reporter->author(), 'JKEENAN', "author() returned expected value");
+}
 
+{
+    note("Testing 'file' scheme");
+
+    my $reporter = CPAN::cpanminus::reporter::RetainReports->new(verbose => 1);
+    ok(defined $reporter, "Inherited constructor returned defined object");
+    isa_ok($reporter, 'CPAN::cpanminus::reporter::RetainReports');
+
+    my ($uri, $rf);
+    $uri = q|file:///home/jkeenan/learn/perl/Phony-PASS-0.01.tar.gz|;
+    $rf = $reporter->parse_uri($uri);
+    ok($rf, "parse_uri() returned true value");
+    my %expect = (
+        distname => 'Phony-PASS',
+        distversion => '0.01',
+        distfile => $uri,
+        author => undef,
+    );
+    is($reporter->distname(), $expect{distname},
+        "distname() returned expected value: $expect{distname}");
+    is($reporter->distversion(), $expect{distversion},
+        "distversion() returned expected value: $expect{distversion}");
+    is($reporter->distfile(), $expect{distfile},
+        "distfile() returned expected value: $expect{distfile}");
+    ok(! defined $reporter->author(),
+        "author() returned undefined, as expected");
 }
 
 done_testing;
