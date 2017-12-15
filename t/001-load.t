@@ -1,7 +1,9 @@
 # -*- perl -*-
 use strict;
 use warnings;
+use Cwd;
 use Test::More;
+use File::Spec;
 use File::Temp ( qw| tempdir | );
 
 BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
@@ -95,7 +97,10 @@ BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
     isa_ok($reporter, 'CPAN::cpanminus::reporter::RetainReports');
 
     my ($uri, $rf);
-    $uri = q|file:///home/jkeenan/learn/perl/Phony-PASS-0.01.tar.gz|;
+    my $cwd = cwd();
+    my $tarball_for_testing = File::Spec->catfile($cwd, 't', 'data', 'Phony-PASS-0.01.tar.gz');
+    ok(-f $tarball_for_testing, "Located tarball '$tarball_for_testing'");
+    $uri = qq|file://$tarball_for_testing|;
     $rf = $reporter->parse_uri($uri);
     ok($rf, "parse_uri() returned true value");
     my %expect = (
