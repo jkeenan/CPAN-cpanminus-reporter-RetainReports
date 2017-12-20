@@ -1,6 +1,6 @@
 Changes
-examples/BINGOS.Archive-Extract-0.80.log.json
-examples/BINGOS.Archive-Extract-0.80.log.txt
+examples/DAGOLDEN.Sub-Uplevel-0.2800.log.json
+examples/DAGOLDEN.Test-API-0.008.log.json
 lib/CPAN/cpanminus/reporter/RetainReports.pm
 LICENSE
 Makefile.PL
