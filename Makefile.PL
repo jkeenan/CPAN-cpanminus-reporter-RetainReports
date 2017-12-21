@@ -15,6 +15,7 @@ WriteMakefile(
                      'CPAN::Testers::Common::Client'    => 0,
                      'CPAN::DistnameInfo'               => 0,
                      'Cwd'                              => 0,
+                     'Data::Dump'                       => 0,   # scripts/dump-parsed-cpanm-build-logs
                      'File::Path'                       => 2.06,
                      'File::Spec'                       => 0,
                      'JSON'                             => 0,

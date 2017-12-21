@@ -198,7 +198,7 @@ Running the program on the two files in the F<examples/> directory in this distr
 
 =head1 PREREQUISITES
 
-CPAN::cpanminus::reporter::RetainReports and its prerequisites.
+CPAN::cpanminus::reporter::RetainReports and its prerequisites.  Data::Dump.
 
 =head1 AUTHOR
 
