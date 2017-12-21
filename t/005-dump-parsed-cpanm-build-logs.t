@@ -4,7 +4,6 @@ use warnings;
 use Test::More;
 use Carp;
 use Capture::Tiny qw( capture );
-#use Capture::Tiny qw( yypcapture_stdout capture_stderr );
 use Cwd;
 use File::Spec::Functions;
 #use Data::Dump ( qw| dd pp | );
@@ -20,7 +19,7 @@ ok(-f $json_files[0], "Found $json_files[0] for testing");
 ($stdout, $stderr, @results) = capture {
     system(qq| perl $script $json_files[0] |);
 };
-ok(! $stderr, "Nothing went to STDERR");
+ok(! $stderr, "Nothing went to STDERR") or diag($stderr);
 is($results[0], 0, "Exit 0, as expected");
 like($stdout, qr/author\s+=>\s+"DAGOLDEN"/, "Got author");
 like($stdout, qr/dist\s+=>\s+"Sub-Uplevel"/, "Got dist");
@@ -35,7 +34,7 @@ ok(-f $json_files[1], "Found $json_files[1] for testing");
 ($stdout, $stderr, @results) = capture {
     system(qq| perl $script $json_files[1] |);
 };
-ok(! $stderr, "Nothing went to STDERR");
+ok(! $stderr, "Nothing went to STDERR") or diag($stderr);
 is($results[0], 0, "Exit 0, as expected");
 like($stdout, qr/author\s+=>\s+"DAGOLDEN"/, "Got author");
 like($stdout, qr/dist\s+=>\s+"Test-API"/, "Got dist");
@@ -55,7 +54,7 @@ note("Take input from STDIN");
 ($stdout, $stderr, @results) = capture {
     system(qq< cat $json_files[0] | perl $script >);
 };
-ok(! $stderr, "Nothing went to STDERR");
+ok(! $stderr, "Nothing went to STDERR") or diag($stderr);
 is($results[0], 0, "Exit 0, as expected");
 like($stdout, qr/author\s+=>\s+"DAGOLDEN"/, "Got author");
 like($stdout, qr/dist\s+=>\s+"Sub-Uplevel"/, "Got dist");
