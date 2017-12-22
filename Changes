@@ -1,5 +1,9 @@
 Revision history for Perl module CPAN::cpanminus::reporter::RetainReports
 
+0.09 Fri Dec 22 11:22:48 EST 2017
+    - Implement better syntax for path to perl executable, as suggested by
+      Andreas Koenig.
+
 0.08 Wed Dec 20 21:11:24 EST 2017
     - Add missing prerequisite Data::Dump for 'dump-parsed-cpanm-build-logs'
 
