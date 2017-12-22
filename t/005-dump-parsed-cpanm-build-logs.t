@@ -8,15 +8,14 @@ use Capture::Tiny qw( capture );
 use Config;
 use Cwd;
 use File::Spec::Functions;
-#use Data::Dump ( qw| dd pp | );
 
-#print STDERR "$_\n" for @INC;
 my (@json_files, $stdout, $stderr, @results);
 my $cwd = cwd();
-my $secure_perl_path = $Config{perlpath};
-$secure_perl_path .= $Config{_exe}
-    unless $secure_perl_path =~ m/$Config{_exe}$/i;
-say STDERR "<$secure_perl_path>";
+# perldoc perlport: "Command names versus file pathnames"
+my $this_perl = $Config{perlpath};
+if ($^O ne 'VMS') {
+	$this_perl .= $Config{_exe} unless $this_perl =~ m/\Q$Config{_exe}\E$/i;
+}
 
 my $script = catfile($cwd, 'scripts', 'dump-parsed-cpanm-build-logs');
 ok(-f $script, "Found $script");
@@ -25,7 +24,7 @@ note("Take input from file with PASS");
 $json_files[0] = catfile($cwd, 'examples', 'DAGOLDEN.Sub-Uplevel-0.2800.log.json');
 ok(-f $json_files[0], "Found $json_files[0] for testing");
 ($stdout, $stderr, @results) = capture {
-    system(qq| $secure_perl_path $script $json_files[0] |);
+    system(qq| $this_perl $script $json_files[0] |);
 };
 ok(! $stderr, "Nothing went to STDERR") or diag($stderr);
 is($results[0], 0, "Exit 0, as expected");
@@ -40,7 +39,7 @@ note("Take input from file with FAIL");
 $json_files[1] = catfile($cwd, 'examples', 'DAGOLDEN.Test-API-0.008.log.json');
 ok(-f $json_files[1], "Found $json_files[1] for testing");
 ($stdout, $stderr, @results) = capture {
-    system(qq| $secure_perl_path $script $json_files[1] |);
+    system(qq| $this_perl $script $json_files[1] |);
 };
 ok(! $stderr, "Nothing went to STDERR") or diag($stderr);
 is($results[0], 0, "Exit 0, as expected");
@@ -53,14 +52,14 @@ like($stdout, qr/Result:\s+FAIL/, "Got Result");
 
 note("Take input from two files");
 ($stdout, $stderr, @results) = capture {
-    system(qq| $secure_perl_path $script $json_files[0] $json_files[1] |);
+    system(qq| $this_perl $script $json_files[0] $json_files[1] |);
 };
 like($stdout, qr/Result:\s+PASS/, "Dumping two files: Got first Result");
 like($stdout, qr/Result:\s+PASS/, "Dumping two files: Got second Result");
 
 note("Take input from STDIN");
 ($stdout, $stderr, @results) = capture {
-    system(qq< cat $json_files[0] | $secure_perl_path $script >);
+    system(qq< cat $json_files[0] | $this_perl $script >);
 };
 ok(! $stderr, "Nothing went to STDERR") or diag($stderr);
 is($results[0], 0, "Exit 0, as expected");
