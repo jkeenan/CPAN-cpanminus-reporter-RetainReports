@@ -38,6 +38,7 @@ our @EXPORT_OK = ( qw|
 
 sub test_one_log_file {
     my $args = shift;
+    my $tr = delete $args->{transmit_report} || '';
     _check_args($args);
     my $reporter = _create_reporter($args);
 
@@ -46,6 +47,7 @@ sub test_one_log_file {
         local *CPAN::cpanminus::reporter::RetainReports::_check_cpantesters_config_data = sub { 1 };
         my $tdir = tempdir( CLEANUP => 1 );
         $reporter->set_report_dir($tdir);
+        $reporter->transmit_report() if $tr;
         $reporter->run;
         _analyze_json_file($tdir, $args);
     }

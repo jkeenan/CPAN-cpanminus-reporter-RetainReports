@@ -22,6 +22,8 @@ WriteMakefile(
                      'File::Path'                       => 2.06,
                      'File::Spec'                       => 0,
                      'JSON'                             => 0,
+                     'Test::Reporter'                   => 0,
+                     'Test::Reporter::Transport'        => 0,
                      'URI'                              => 0,
     },
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) =>  {

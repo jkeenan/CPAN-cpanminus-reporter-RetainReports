@@ -10,7 +10,7 @@ use File::Spec;
 use JSON;
 use URI;
 use CPAN::DistnameInfo;
-#use Data::Dump qw( dd pp );
+use Data::Dump qw( dd pp );
 
 =head1 NAME
 
@@ -308,6 +308,36 @@ sub distname {
   return $self->{_distname};
 }
 
+=head2 C<transmit_report()>
+
+=over 4
+
+=item * Purpose
+
+Transmit a report to CPANtesters as well as retaining report on disk.
+
+=item * Arguments
+
+   $self->transmit_report();
+
+=item * Return Value
+
+None.
+
+=item * Comment
+
+This method must be called after C<new()> but before C<run()>.
+
+=back
+
+=cut
+
+sub transmit_report {
+    my $self = shift;
+    $self->{transmit_report}++;
+    return $self;
+}
+
 =head2 C<run()>
 
 =over 4
@@ -355,6 +385,7 @@ plain-text version of the report.
 sub make_report {
     my ($self, $resource, $dist, $result, @test_output) = @_;
 
+if ($self->{transmit_report}) { say STDERR "Requesting report transmission"; }
     if ( index($dist, 'Local-') == 0 ) {
         print "'Local::' namespace is reserved. Skipping resource '$resource'\n"
           unless $self->quiet;
@@ -386,6 +417,62 @@ sub make_report {
         'dist'        => $self->distname,   # string like: Mason-Tidy
     } );
     close $OUT or croak "Unable to close $report after writing";
+
+    return unless $self->{transmit_report};
+
+    require CPAN::Testers::Common::Client;
+    require Test::Reporter;
+    require Test::Reporter::Transport;
+  	my $client = CPAN::Testers::Common::Client->new(%CTCC_args);
+    if (!$self->skip_history && $client->is_duplicate) {
+      print "($resource, $author, $dist, $result) was already sent. Skipping...\n"
+        if $self->verbose;
+      return;
+    }
+    else {
+      print "sending: ($resource, $author, $dist, $result)\n" unless $self->quiet;
+    }
+    say STDERR "CPAN::cpanminus::reporter::RetainReports object";
+    pp($self);
+    say STDERR "CPAN::Testers::Common::Client object";
+    pp($client);
+
+    my %TR_args = (
+      grade          => $client->grade,
+      distribution   => $dist,
+      distfile       => $self->distfile,
+      comments       => $client->email,
+      via            => $client->via,
+    );
+    say STDERR "XXX: Test::Reporter arguments -- SO FAR!";
+    pp(\%TR_args);
+    # TODO: Need to get values for transport, transport_args, from
+#    my $reporter = Test::Reporter->new(
+#      transport      => $self->config->transport_name,
+#      transport_args => $self->config->transport_args,
+#      grade          => $client->grade,
+#      distribution   => $dist,
+#      distfile       => $self->distfile,
+#      from           => $self->config->email_from,
+#      comments       => $client->email,
+#      via            => $client->via,
+#    );
+#    pp($reporter);
+
+#        if ($self->dry_run) {
+#          print "not sending (dry run)\n" unless $self->quiet;
+#          return;
+#        }
+
+#        try {
+#          $reporter->send() || die $reporter->errstr();
+#        }
+#        catch {
+#          print "Error while sending this report, continuing with the next one ($_)...\n" unless $self->quiet;
+#          print "DEBUG: @_" if $self->verbose;
+#        } finally{
+#          $client->record_history unless $self->skip_history;
+#        };
 
     return;
 }
