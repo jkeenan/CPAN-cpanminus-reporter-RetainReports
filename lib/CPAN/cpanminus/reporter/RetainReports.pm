@@ -10,6 +10,7 @@ use File::Spec;
 use JSON;
 use URI;
 use CPAN::DistnameInfo;
+use CPAN::Testers::Common::Client::Config ();
 use Data::Dump qw( dd pp );
 
 =head1 NAME
@@ -437,16 +438,37 @@ if ($self->{transmit_report}) { say STDERR "Requesting report transmission"; }
     say STDERR "CPAN::Testers::Common::Client object";
     pp($client);
 
+=pod
+
+    my $report = Test::Reporter->new(
+        transport => 'Metabase',
+        transport_args => [
+          uri     => 'http://metabase.example.com:3000/',
+          id_file => '/home/jdoe/.metabase/metabase_id.json',
+        ],
+    );
+
+=cut
+
+    my $config_dir = CPAN::Testers::Common::Client::Config::get_config_dir();
+    say STDERR "YYY: config_dir: $config_dir";
     my %TR_args = (
-      grade          => $client->grade,
-      distribution   => $dist,
-      distfile       => $self->distfile,
-      comments       => $client->email,
-      via            => $client->via,
+        grade          => $client->grade,
+        distribution   => $dist,
+        distfile       => $self->distfile,
+        comments       => $client->email,
+        via            => $client->via,
+        from           => '',
+        transport      => 'Metabase',
+        transport_args => [
+          uri     => 'http://metabase.example.com:3000/',
+          id_file => File::Spec->catfile($config_dir, 'metabase_id.json'),
+        ],
     );
     say STDERR "XXX: Test::Reporter arguments -- SO FAR!";
     pp(\%TR_args);
-    # TODO: Need to get values for transport, transport_args, from
+    # TODO: Need to get values for keys: 'transport', 'transport_args',
+    # 'email_from'
 #    my $reporter = Test::Reporter->new(
 #      transport      => $self->config->transport_name,
 #      transport_args => $self->config->transport_args,
@@ -457,22 +479,23 @@ if ($self->{transmit_report}) { say STDERR "Requesting report transmission"; }
 #      comments       => $client->email,
 #      via            => $client->via,
 #    );
-#    pp($reporter);
+    my $reporter = Test::Reporter->new(%TR_args);
+    pp($reporter);
 
-#        if ($self->dry_run) {
-#          print "not sending (dry run)\n" unless $self->quiet;
-#          return;
-#        }
+        if ($self->dry_run) {
+          print "not sending (dry run)\n" unless $self->quiet;
+          return;
+        }
 
-#        try {
-#          $reporter->send() || die $reporter->errstr();
-#        }
-#        catch {
-#          print "Error while sending this report, continuing with the next one ($_)...\n" unless $self->quiet;
-#          print "DEBUG: @_" if $self->verbose;
-#        } finally{
-#          $client->record_history unless $self->skip_history;
-#        };
+        try {
+          $reporter->send() || die $reporter->errstr();
+        }
+        catch {
+          print "Error while sending this report, continuing with the next one ($_)...\n" unless $self->quiet;
+          print "DEBUG: @_" if $self->verbose;
+        } finally{
+          $client->record_history unless $self->skip_history;
+        };
 
     return;
 }
