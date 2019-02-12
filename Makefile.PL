@@ -30,4 +30,14 @@ WriteMakefile(
                      'File::Temp'                       => 0,
                      'Path::Tiny'                       => 0,
     },
+    ( $mm_ver >= 6.46 ? ( META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources => {
+            repository  => {
+                url  => 'https://github.com/jkeenan/CPAN-cpanminus-reporter-RetainReports.git',
+                web  => 'https://github.com/jkeenan/CPAN-cpanminus-reporter-RetainReports',
+                type => 'git',
+            },
+        },
+    }) : () ),
 );
