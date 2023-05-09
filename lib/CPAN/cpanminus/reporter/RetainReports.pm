@@ -252,7 +252,6 @@ These attributes can subsequently be accessed via:
 
 sub parse_uri {
   my ($self, $resource) = @_;
-  print STDERR "XXX: resource: $resource\n";
 
   my $d = CPAN::DistnameInfo->new($resource);
   $self->distversion($d->version);
@@ -260,7 +259,6 @@ sub parse_uri {
 
   my $uri = URI->new( $resource );
   my $scheme = lc $uri->scheme;
-  print STDERR "YYY: scheme: $scheme\n";
   my %eligible_schemes = map {$_ => 1} (qw| http https ftp cpan file |);
   if (! $eligible_schemes{$scheme}) {
     print "invalid scheme '$scheme' for resource '$resource'. Skipping...\n"
@@ -268,15 +266,7 @@ sub parse_uri {
     return;
   }
 
-  my $author;
-#  if ($scheme eq 'file') {
-#    # A local file may not be in the correct format for Metabase::Resource.
-#    # Hence, we may not be able to parse it for the author.
-#    $author = '';
-#  }
-#  else {
-    $author = $self->get_author( $uri->path );
-#  }
+  my $author = $self->get_author( $uri );
   unless (defined $author) {
     print "error fetching author for resource '$resource'. Skipping...\n"
       unless $self->quiet;

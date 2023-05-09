@@ -13,7 +13,7 @@ WriteMakefile(
     ABSTRACT     => 'Retain reports on disk rather than transmitting them',
     EXE_FILES    => [ 'scripts/dump-parsed-cpanm-build-logs' ],
     PREREQ_PM    => {
-                     'App::cpanminus::reporter'         => 0.17,
+                     'App::cpanminus::reporter'         => 0.19,
                      'Carp'                             => 0,
                      'CPAN::Testers::Common::Client'    => 0,
                      'CPAN::DistnameInfo'               => 0,
