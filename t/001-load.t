@@ -98,7 +98,12 @@ BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
 
     my ($uri, $rf);
     my $cwd = cwd();
-    my $tarball_for_testing = File::Spec->catfile($cwd, 't', 'data', 'Phony-PASS-0.01.tar.gz');
+    my $author = 'METATEST';
+    my $first_id =  substr($author, 0, 1);
+    my $second_id = substr($author, 0, 2);
+    my $tarball = 'Phony-PASS-0.01.tar.gz';
+    my $tarball_for_testing = File::Spec->catfile($cwd, 't', 'data',
+        $first_id, $second_id, $author, $tarball);
     ok(-f $tarball_for_testing, "Located tarball '$tarball_for_testing'");
     $uri = qq|file://$tarball_for_testing|;
     $rf = $reporter->parse_uri($uri);
@@ -106,8 +111,8 @@ BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
     my %expect = (
         distname => 'Phony-PASS',
         distversion => '0.01',
-        distfile => $uri,
-        author => undef,
+        distfile => File::Spec->catfile($author, $tarball),
+        author => $author,
     );
     is($reporter->distname(), $expect{distname},
         "distname() returned expected value: $expect{distname}");
@@ -115,8 +120,10 @@ BEGIN { use_ok( 'CPAN::cpanminus::reporter::RetainReports' ); }
         "distversion() returned expected value: $expect{distversion}");
     is($reporter->distfile(), $expect{distfile},
         "distfile() returned expected value: $expect{distfile}");
-    ok(! defined $reporter->author(),
-        "author() returned undefined, as expected");
+    ok( defined $reporter->author(),
+        "author() returned defined value, as expected");
+    is($reporter->author(), $expect{author},
+        "author() returned expected value: $expect{author}");
 }
 
 done_testing;
