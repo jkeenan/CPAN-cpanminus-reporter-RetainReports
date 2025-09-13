@@ -181,7 +181,7 @@ sub set_report_dir {
 
 =item * Purpose
 
-Identify the already created directory in which reports will be ridden.
+Identify the already created directory in which reports will be written.
 
 =item * Arguments
 
