@@ -10,7 +10,7 @@ use File::Spec;
 use JSON;
 use URI;
 use CPAN::DistnameInfo;
-#use Data::Dump qw( dd pp );
+use Data::Dump qw( dd pp );
 
 =head1 NAME
 
@@ -252,12 +252,16 @@ These attributes can subsequently be accessed via:
 
 sub parse_uri {
   my ($self, $resource) = @_;
+  say STDERR "XXX:";
+  pp($self);
 
+  say STDERR "AAA: CcrR::parse_uri: resource: $resource";
   my $d = CPAN::DistnameInfo->new($resource);
   $self->distversion($d->version);
   $self->distname($d->dist);
 
   my $uri = URI->new( $resource );
+  say STDERR "BBB: CcrR::parse_uri: uri: $uri";
   my $scheme = lc $uri->scheme;
   my %eligible_schemes = map {$_ => 1} (qw| http https ftp cpan file |);
   if (! $eligible_schemes{$scheme}) {
@@ -267,6 +271,7 @@ sub parse_uri {
   }
 
   my $author = $self->get_author( $uri );
+  say STDERR "CCC: CcrR::parse_uri: author: $author";
   unless (defined $author) {
     print "error fetching author for resource '$resource'. Skipping...\n"
       unless $self->quiet;
@@ -284,6 +289,8 @@ sub parse_uri {
 
   # If $author eq '', then distfile will be set to $uri.
   $self->distfile(substr("$uri", index("$uri", $author)));
+  say STDERR "DDD: CcrR::parse_uri:";
+  pp $self;
 
   return 1;
 }
