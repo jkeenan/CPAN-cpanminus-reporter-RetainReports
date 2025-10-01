@@ -49,7 +49,7 @@ This is B<alpha> code; the API is subject to change.
 This library is a subclass of Breno G. de Oliveira's CPAN library
 L<App-cpanminus-reporter|https://metacpan.org/release/GARU/App-cpanminus-reporter-0.17/>.
 That library provides the utility program
-F<cpanm-reporter|https://metacpan.org/release/GARU/App-cpanminus-reporter-0.17/view/bin/cpanm-reporter>
+L<cpanm-reporter|https://metacpan.org/release/GARU/App-cpanminus-reporter-0.17/view/bin/cpanm-reporter>
 a way to generate and transmit CPANtesters reports after using Tatsuhiko
 Miyagawa's
 L<cpanm|https://metacpan.org/release/MIYAGAWA/App-cpanminus-1.7043/view/bin/cpanm>
