@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.10.1;
 use parent ('App::cpanminus::reporter');
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 use Carp;
 use File::Path qw( make_path );
 use File::Spec;
